@@ -1,0 +1,49 @@
+version: "3.7"
+
+services:
+  db:
+    image: postgres:14.4
+    restart: always
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=134DsPnB
+      - PGDATA=/var/lib/postgresql/data/pgdata-1
+    configs:
+      - listen_addresses='*'
+    command: postgres -c listen_addresses="*"
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./db-data:/var/lib/postgresql/data
+#      - ./db-data/postgresql.conf:/var/lib/postgresql/data/pgdata/postgresql.conf
+
+  redis:
+    image: redis:7.0-alpine
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning --requirepass 134tGfhdX
+    volumes:
+      - cache:/data
+volumes:
+  cache:
+    driver: local
+
+#
+#  app:
+#    build: .
+#    command: >
+#      sh -c "python3 manage.py collectstatic --noinput &&
+#             python3 manage.py migrate &&
+#             python3 manage.py runserver 0.0.0.0:8000"
+#    volumes:
+#      - ./backend-server:/app/backend-server
+#    environment:
+#      - DEBUG=1
+#      - SECRET_KEY=samplesecret456or@@)#RNSCdgvd4393#
+#      - ALLOWED_HOSTS=*
+#    ports:
+#      - "8000:8000"
+#    depends_on:
+#      - db
